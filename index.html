@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🚓 Sheriff Central</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🚓 SHERIFF CENTRAL</h1>
+
+<input type="text" id="search" placeholder="Buscar unidad..." onkeyup="filtrar()">
+
+<table id="tabla">
+  <tr>
+    <th>Malla</th>
+    <th>Unidad</th>
+    <th>Tipo</th>
+    <th>Estado</th>
+    <th>Aviso</th>
+    <th>Acción</th>
+  </tr>
+
+  <tr>
+    <td>Alpha 10</td>
+    <td>A-10</td>
+    <td>ST</td>
+    <td class="disponible">Disponible</td>
+    <td>-</td>
+    <td>
+      <button onclick="cambiarEstado(this,'disponible')">🟢</button>
+      <button onclick="cambiarEstado(this,'servicio')">🟡</button>
+      <button onclick="cambiarEstado(this,'indisponible')">🔴</button>
+    </td>
+  </tr>
+
+</table>
+
+<script src="script.js"></script>
+</body>
+</html>
