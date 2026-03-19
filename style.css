@@ -1,0 +1,47 @@
+body {
+  background: #020617;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+
+h1 {
+  color: #38bdf8;
+}
+
+input {
+  padding: 10px;
+  margin: 10px;
+  width: 300px;
+}
+
+table {
+  width: 90%;
+  margin: auto;
+  border-collapse: collapse;
+}
+
+th {
+  background: #0f172a;
+}
+
+td, th {
+  padding: 10px;
+}
+
+.disponible {
+  color: #22c55e;
+}
+
+.servicio {
+  color: #eab308;
+}
+
+.indisponible {
+  color: #ef4444;
+}
+
+button {
+  margin: 2px;
+  cursor: pointer;
+}
