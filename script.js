@@ -1,14 +1,3 @@
-function cambiarEstado(btn, estado) {
-  let fila = btn.parentNode.parentNode;
-  let celda = fila.cells[3];
-
-  celda.className = estado;
-
-  if (estado === "disponible") celda.innerText = "Disponible";
-  if (estado === "servicio") celda.innerText = "En servicio";
-  if (estado === "indisponible") celda.innerText = "Indisponible";
-}
-
 function filtrar() {
   let input = document.getElementById("search").value.toLowerCase();
   let filas = document.querySelectorAll("#tabla tr");
