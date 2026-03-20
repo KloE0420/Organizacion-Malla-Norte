@@ -1,82 +1,93 @@
-let datos = JSON.parse(localStorage.getItem("unidades")) || [
-  {malla:"Alpha 10", unidad:"A-10", tipo:"ST", estado:"Disponible", tac:"ST-1", aviso:"", notas:""}
+const mallas = [
+  ...Array.from({length:10}, (_,i)=>`Alpha ${(i+1)*10}`),
+  ...Array.from({length:10}, (_,i)=>`Bravo ${(i+1)*10}`),
+  "Charlie 1","Charlie 2","Charlie 3",
+  "Ocelot 10","Ocelot 20",
+  "Bike 10","Bike 20",
+  "Yankee","Roger",
+  "Foxtrot 10","Foxtrot 20",
+  "Mike 10","Mike 20",
+  "Dogma 10","Dogma 20",
+  "Victor 10","Victor 20",
+  "Tiger 10","Tiger 20",
+  "Ranger","Shell","Pia"
 ];
 
-function guardar() {
-  localStorage.setItem("unidades", JSON.stringify(datos));
-}
+const situaciones = ["ST", "MT", "GT", "TAC"];
+const estados = ["Disponible", "No Disponible"];
 
-function render() {
-  let tabla = document.getElementById("tabla");
+function crearSelect(opciones) {
+  const select = document.createElement("select");
 
-  tabla.innerHTML = `
-<tr>
-<th>Malla</th>
-<th>Unidad</th>
-<th>Tipo</th>
-<th>Estado</th>
-<th>TAC</th>
-<th class="aviso">Aviso</th>
-<th class="notas">Notas</th>
-</tr>`;
-
-  datos.forEach((d, i) => {
-    tabla.innerHTML += `
-<tr>
-
-<td><input class="form-control" value="${d.malla}" onchange="editar(${i}, 'malla', this.value)"></td>
-
-<td><input class="form-control" value="${d.unidad}" onchange="editar(${i}, 'unidad', this.value)"></td>
-
-<td>
-<select class="form-select" onchange="editar(${i}, 'tipo', this.value)">
-<option ${d.tipo=="ST"?"selected":""}>ST</option>
-<option ${d.tipo=="MT"?"selected":""}>MT</option>
-<option ${d.tipo=="GT"?"selected":""}>GT</option>
-</select>
-</td>
-
-<td>
-<select class="form-select" onchange="editar(${i}, 'estado', this.value)">
-<option ${d.estado=="Disponible"?"selected":""}>Disponible</option>
-<option ${d.estado=="En servicio"?"selected":""}>En servicio</option>
-<option ${d.estado=="Indisponible"?"selected":""}>Indisponible</option>
-</select>
-</td>
-
-<td><input class="form-control" value="${d.tac}" onchange="editar(${i}, 'tac', this.value)"></td>
-
-<td class="aviso">
-<textarea class="form-control" rows="2"
-onchange="editar(${i}, 'aviso', this.value)">${d.aviso}</textarea>
-</td>
-
-<td class="notas">
-<textarea class="form-control" rows="2"
-onchange="editar(${i}, 'notas', this.value)">${d.notas}</textarea>
-</td>
-
-</tr>`;
+  opciones.forEach(op => {
+    const option = document.createElement("option");
+    option.value = op;
+    option.textContent = op;
+    select.appendChild(option);
   });
+
+  return select;
 }
 
-function editar(i, campo, valor) {
-  datos[i][campo] = valor;
-  guardar();
+function crearFila() {
+  const tr = document.createElement("tr");
+
+  // MALLA
+  let tdMalla = document.createElement("td");
+  tdMalla.appendChild(crearSelect(mallas));
+
+  // UNIDAD
+  let tdUnidad = document.createElement("td");
+  tdUnidad.innerHTML = `<input type="text" placeholder="Agentes...">`;
+
+  // ESTADO
+  let tdEstado = document.createElement("td");
+  let selectEstado = crearSelect(estados);
+  selectEstado.onchange = () => {
+    selectEstado.className = selectEstado.value === "Disponible"
+      ? "disponible"
+      : "no-disponible";
+  };
+  tdEstado.appendChild(selectEstado);
+
+  // SITUACION
+  let tdSituacion = document.createElement("td");
+  tdSituacion.appendChild(crearSelect(situaciones));
+
+  // AVISOS
+  let tdAvisos = document.createElement("td");
+  let textarea = document.createElement("textarea");
+
+  // CONTADOR
+  let tdContador = document.createElement("td");
+  tdContador.textContent = "0";
+
+  textarea.oninput = () => {
+    const texto = textarea.value;
+    const count = texto.split(",").filter(t => t.trim() !== "").length;
+    tdContador.textContent = count;
+  };
+
+  tdAvisos.appendChild(textarea);
+
+  // NOTAS
+  let tdNotas = document.createElement("td");
+  tdNotas.innerHTML = `<textarea placeholder="Notas..."></textarea>`;
+
+  tr.appendChild(tdMalla);
+  tr.appendChild(tdUnidad);
+  tr.appendChild(tdEstado);
+  tr.appendChild(tdSituacion);
+  tr.appendChild(tdAvisos);
+  tr.appendChild(tdContador);
+  tr.appendChild(tdNotas);
+
+  return tr;
 }
 
-function agregarFila() {
-  datos.push({
-    malla:"Nueva",
-    unidad:"-",
-    tipo:"ST",
-    estado:"Disponible",
-    tac:"-",
-    aviso:"",
-    notas:""
-  });
-  guardar();
-  render();
+function añadirFila() {
+  document.getElementById("bodyTabla").appendChild(crearFila());
 }
 
-render();
+// crear primera fila automática
+añadirFila();
