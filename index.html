@@ -181,6 +181,16 @@ function render() {
       guardar();
     });
 
+    selEstado.classList.remove("disponible", "no-disponible");
+
+    if (fila.estado === "Disponible") {
+      selEstado.classList.add("disponible");
+    } else {
+      selEstado.classList.add("no-disponible");
+    }
+
+    if (fila.estado === "Disponible") selEstado.classList.add("disponible");
+    else selEstado.classList.add("no-disponible");
 
     tdEstado.appendChild(selEstado);
 
