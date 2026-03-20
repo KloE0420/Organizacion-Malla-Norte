@@ -1,33 +1,26 @@
-body {
-  background: #020617;
-  color: white;
-  font-family: Arial;
-  text-align: center;
+input, select {
+  background-color: #1e293b !important;
+  color: white !important;
+  border: none !important;
 }
 
-table {
-  width: 90%;
-  margin: auto;
-  border-collapse: collapse;
+textarea {
+  background-color: #1e293b !important;
+  color: white !important;
+  border: none !important;
+  resize: vertical;
 }
 
-th {
-  background: #0f172a;
+td {
+  vertical-align: middle;
 }
 
-td, th {
-  padding: 10px;
+/* AVISO MÁS GRANDE */
+.aviso {
+  min-width: 200px;
 }
 
-select, input {
-  padding: 5px;
-  background: #1e293b;
-  color: white;
-  border: none;
-}
-
-button {
-  margin: 10px;
-  padding: 10px;
-  cursor: pointer;
+/* NOTAS MÁS GRANDE */
+.notas {
+  min-width: 250px;
 }
