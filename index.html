@@ -1,81 +1,112 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>LSCSO Control de Malla</title>
+<meta charset="UTF-8">
+<title>LSCSO MDT</title>
 
-  <!-- BOOTSTRAP -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <style>
-    body {
-      background: linear-gradient(135deg, #1b2a30, #0f1a1f);
-      color: #e8f1f2;
-    }
+<style>
+body {
+  background: #0f1a1f;
+  color: #e8f1f2;
+}
 
-    h1 {
-      color: #d4af37;
-      text-align: center;
-      margin-bottom: 20px;
-    }
+/* HEADER MDT */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1b2a30;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
 
-    .table {
-      background: #2c3e44;
-      border-radius: 10px;
-      overflow: hidden;
-    }
+.title {
+  color: #d4af37;
+  font-weight: bold;
+  font-size: 20px;
+}
 
-    .table th {
-      background: #0f1a1f;
-      color: #d4af37;
-    }
+/* TARJETAS */
+.card-mdt {
+  background: #1b2a30;
+  border: 1px solid #d4af37;
+  border-radius: 10px;
+  padding: 15px;
+}
 
-    .disponible {
-      background-color: #b8f2e6 !important;
-    }
+/* TABLA */
+.table {
+  background: #2c3e44;
+}
 
-    .no-disponible {
-      background-color: #ffb5b5 !important;
-    }
+.table th {
+  background: #0f1a1f;
+  color: #d4af37;
+}
 
-    textarea {
-      min-height: 80px;
-    }
+/* ESTADOS */
+.disponible {
+  background-color: #b8f2e6 !important;
+}
 
-    .btn-sheriff {
-      background-color: #d4af37;
-      border: none;
-      color: black;
-    }
+.no-disponible {
+  background-color: #ffb5b5 !important;
+}
 
-    .btn-sheriff:hover {
-      background-color: #c19b2e;
-    }
-  </style>
+/* BOTONES */
+.btn-sheriff {
+  background: #d4af37;
+  border: none;
+}
+
+.btn-sheriff:hover {
+  background: #c19b2e;
+}
+
+/* TEXTAREA */
+textarea {
+  min-height: 70px;
+}
+</style>
 </head>
 
-<body class="container py-4">
+<body class="container py-3">
 
-<h1>⭐ LSCSO - CONTROL DE MALLA</h1>
-
-<div class="table-responsive">
-  <table class="table table-bordered align-middle text-center">
-    <thead>
-      <tr>
-        <th>Malla</th>
-        <th>Unidad</th>
-        <th>Estado</th>
-        <th>Situación</th>
-        <th>Avisos acudidos</th>
-        <th>Notas</th>
-      </tr>
-    </thead>
-    <tbody id="tabla"></tbody>
-  </table>
+<div class="header">
+  <div class="title">⭐ LSCSO MDT - Control de Malla</div>
+  <button class="btn btn-sheriff" onclick="añadirFila()">➕ Unidad</button>
 </div>
 
-<div class="text-center mt-3">
-  <button class="btn btn-sheriff" onclick="añadirFila()">➕ Añadir Unidad</button>
+<div class="card-mdt mb-3">
+  <label>Filtrar por situación:</label>
+  <select class="form-select" onchange="filtrar(this.value)">
+    <option value="ALL">Todas</option>
+    <option value="ST">ST</option>
+    <option value="MT">MT</option>
+    <option value="GT">GT</option>
+    <option value="TAC">TAC</option>
+  </select>
+</div>
+
+<div class="card-mdt">
+  <div class="table-responsive">
+    <table class="table table-bordered text-center align-middle">
+      <thead>
+        <tr>
+          <th>Malla</th>
+          <th>Unidad</th>
+          <th>Estado</th>
+          <th>Situación</th>
+          <th>Avisos</th>
+          <th>Notas</th>
+        </tr>
+      </thead>
+      <tbody id="tabla"></tbody>
+    </table>
+  </div>
 </div>
 
 <script>
@@ -94,10 +125,16 @@ const mallas = [
   "Ranger","Shell","Pia"
 ];
 
-const situaciones = ["-","ST","MT","GT","TAC"];
+const situaciones = ["ST","MT","GT","TAC"];
 const estados = ["Disponible","No Disponible"];
 
-function crearSelect(opciones) {
+let datos = JSON.parse(localStorage.getItem("malla")) || [];
+
+function guardar() {
+  localStorage.setItem("malla", JSON.stringify(datos));
+}
+
+function crearSelect(opciones, valor, callback) {
   let select = document.createElement("select");
   select.className = "form-select";
 
@@ -105,66 +142,84 @@ function crearSelect(opciones) {
     let option = document.createElement("option");
     option.value = op;
     option.textContent = op;
+    if (op === valor) option.selected = true;
     select.appendChild(option);
   });
 
+  select.onchange = e => callback(e.target.value);
   return select;
 }
 
-function crearFila() {
-  const tr = document.createElement("tr");
+function render() {
+  const tabla = document.getElementById("tabla");
+  tabla.innerHTML = "";
 
-  // MALLA
-  let tdMalla = document.createElement("td");
-  tdMalla.appendChild(crearSelect(mallas));
+  datos.forEach((fila, i) => {
+    const tr = document.createElement("tr");
 
-  // UNIDAD
-  let tdUnidad = document.createElement("td");
-  tdUnidad.innerHTML = `<input class="form-control" placeholder="Agentes...">`;
+    let tdMalla = document.createElement("td");
+    tdMalla.appendChild(crearSelect(mallas, fila.malla, val => {
+      datos[i].malla = val; guardar();
+    }));
 
-  // ESTADO
-  let tdEstado = document.createElement("td");
-  let selectEstado = crearSelect(estados);
+    let tdUnidad = document.createElement("td");
+    tdUnidad.innerHTML = `<input class="form-control" value="${fila.unidad}" oninput="datos[${i}].unidad=this.value;guardar()">`;
 
-  selectEstado.onchange = () => {
-    selectEstado.classList.remove("disponible", "no-disponible");
-    if (selectEstado.value === "Disponible") {
-      selectEstado.classList.add("disponible");
-    } else {
-      selectEstado.classList.add("no-disponible");
-    }
-  };
+    let tdEstado = document.createElement("td");
+    let selEstado = crearSelect(estados, fila.estado, val => {
+      datos[i].estado = val; guardar();
+    });
 
-  tdEstado.appendChild(selectEstado);
+    if (fila.estado === "Disponible") selEstado.classList.add("disponible");
+    else selEstado.classList.add("no-disponible");
 
-  // SITUACIÓN
-  let tdSituacion = document.createElement("td");
-  tdSituacion.appendChild(crearSelect(situaciones));
+    tdEstado.appendChild(selEstado);
 
-  // AVISOS
-  let tdAvisos = document.createElement("td");
-  tdAvisos.innerHTML = `<textarea class="form-control" placeholder="Ej: joyería, ammu, banco..."></textarea>`;
+    let tdSit = document.createElement("td");
+    tdSit.appendChild(crearSelect(situaciones, fila.situacion, val => {
+      datos[i].situacion = val; guardar();
+    }));
 
-  // NOTAS
-  let tdNotas = document.createElement("td");
-  tdNotas.innerHTML = `<textarea class="form-control" placeholder="Notas..."></textarea>`;
+    let tdAvisos = document.createElement("td");
+    tdAvisos.innerHTML = `<textarea class="form-control" oninput="datos[${i}].avisos=this.value;guardar()">${fila.avisos}</textarea>`;
 
-  tr.appendChild(tdMalla);
-  tr.appendChild(tdUnidad);
-  tr.appendChild(tdEstado);
-  tr.appendChild(tdSituacion);
-  tr.appendChild(tdAvisos);
-  tr.appendChild(tdNotas);
+    let tdNotas = document.createElement("td");
+    tdNotas.innerHTML = `<textarea class="form-control" oninput="datos[${i}].notas=this.value;guardar()">${fila.notas}</textarea>`;
 
-  return tr;
+    tr.append(tdMalla, tdUnidad, tdEstado, tdSit, tdAvisos, tdNotas);
+    tabla.appendChild(tr);
+  });
 }
 
 function añadirFila() {
-  document.getElementById("tabla").appendChild(crearFila());
+  datos.push({
+    malla: "Alpha 10",
+    unidad: "",
+    estado: "Disponible",
+    situacion: "ST",
+    avisos: "",
+    notas: ""
+  });
+  guardar();
+  render();
 }
 
-// fila inicial
-añadirFila();
+function filtrar(tipo) {
+  if (tipo === "ALL") return render();
+
+  const tabla = document.getElementById("tabla");
+  tabla.innerHTML = "";
+
+  datos.forEach((fila, i) => {
+    if (fila.situacion === tipo) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${fila.malla}</td><td>${fila.unidad}</td><td>${fila.estado}</td><td>${fila.situacion}</td><td>${fila.avisos}</td><td>${fila.notas}</td>`;
+      tabla.appendChild(tr);
+    }
+  });
+}
+
+render();
 </script>
 
 </body>
