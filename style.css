@@ -1,26 +1,62 @@
-input, select {
-  background-color: #1e293b !important;
-  color: white !important;
-  border: none !important;
+body {
+  font-family: Arial, sans-serif;
+  background: #1e2a2f;
+  color: #e6f0f2;
+  padding: 20px;
 }
 
+h1 {
+  text-align: center;
+  color: #d6b36a;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #2c3e44;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #3f575f;
+  text-align: center;
+}
+
+th {
+  background: #1b2a30;
+}
+
+input, select, textarea {
+  width: 100%;
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+/* Estados */
+.disponible {
+  background-color: #a8e6cf;
+  color: #000;
+}
+
+.no-disponible {
+  background-color: #ffaaa5;
+  color: #000;
+}
+
+/* textarea grande */
 textarea {
-  background-color: #1e293b !important;
-  color: white !important;
-  border: none !important;
+  height: 60px;
   resize: vertical;
 }
 
-td {
-  vertical-align: middle;
-}
-
-/* AVISO MÁS GRANDE */
-.aviso {
-  min-width: 200px;
-}
-
-/* NOTAS MÁS GRANDE */
-.notas {
-  min-width: 250px;
+button {
+  margin-top: 15px;
+  padding: 10px;
+  background: #d6b36a;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
