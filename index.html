@@ -2,30 +2,49 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>LSCSO - Control de Malla</title>
+  <title>LSCSO Control</title>
+
   <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
+
 <body>
 
-<h1>🚓 LSCSO - Control de Malla</h1>
+<div class="header">
+  <div class="badge">⭐</div>
+  <h1>LSCSO CONTROL DE MALLA</h1>
+</div>
 
-<table id="tabla">
+<div class="filtros">
+  <button onclick="filtrar('ALL')">Todos</button>
+  <button onclick="filtrar('ST')">ST</button>
+  <button onclick="filtrar('MT')">MT</button>
+  <button onclick="filtrar('GT')">GT</button>
+  <button onclick="filtrar('TAC')">TAC</button>
+</div>
+
+<table>
   <thead>
     <tr>
       <th>Malla</th>
       <th>Unidad</th>
       <th>Estado</th>
       <th>Situación</th>
-      <th>Avisos Acudidos</th>
-      <th>Contador</th>
+      <th>Avisos</th>
+      <th>Total</th>
       <th>Notas</th>
     </tr>
   </thead>
-  <tbody id="bodyTabla"></tbody>
+  <tbody id="tabla"></tbody>
 </table>
 
-<button onclick="añadirFila()">➕ Añadir Unidad</button>
+<button onclick="crearUnidad()">➕ Nueva Unidad</button>
 
-<script src="script.js"></script>
+<script src="firebase.js"></script>
+<script src="app.js"></script>
+
 </body>
 </html>
