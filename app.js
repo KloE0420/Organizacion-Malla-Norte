@@ -72,5 +72,55 @@ function filtrar(tipo) {
         renderFila(doc.id, data);
       }
     });
+
+    db.collection("unidades").onSnapshot(snapshot => {
+  const tabla = document.getElementById("tabla");
+  tabla.innerHTML = "";
+
+  let totalAvisos = 0;
+  let totalUnidades = 0;
+  let disponibles = 0;
+  let noDisponibles = 0;
+
+  let st = 0, mt = 0, gt = 0, tac = 0;
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    totalUnidades++;
+
+    // contar avisos
+    const avisos = data.avisos || "";
+    const numAvisos = avisos.split(",").filter(a => a.trim()).length;
+    totalAvisos += numAvisos;
+
+    // estado
+    if (data.estado === "Disponible") disponibles++;
+    else noDisponibles++;
+
+    // tipo unidad
+    switch (data.situacion) {
+      case "ST": st++; break;
+      case "MT": mt++; break;
+      case "GT": gt++; break;
+      case "TAC": tac++; break;
+    }
+
+    // ⚠️ IMPORTANTE: usa tu función existente
+    renderFila(doc.id, data);
+  });
+
+  // actualizar estadísticas (si existen)
+  if (document.getElementById("totalAvisos")) {
+    document.getElementById("totalAvisos").textContent = totalAvisos;
+    document.getElementById("totalUnidades").textContent = totalUnidades;
+    document.getElementById("disponibles").textContent = disponibles;
+    document.getElementById("noDisponibles").textContent = noDisponibles;
+
+    document.getElementById("st").textContent = st;
+    document.getElementById("mt").textContent = mt;
+    document.getElementById("gt").textContent = gt;
+    document.getElementById("tac").textContent = tac;
+  }
+});
   });
 }
