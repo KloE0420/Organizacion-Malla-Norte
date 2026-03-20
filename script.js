@@ -13,7 +13,7 @@ const mallas = [
   "Ranger","Shell","Pia"
 ];
 
-const situaciones = ["ST", "MT", "GT", "TAC"];
+const situaciones = ["-", "ST", "MT", "GT", "TAC"];
 const estados = ["Disponible", "No Disponible"];
 
 function crearSelect(opciones) {
