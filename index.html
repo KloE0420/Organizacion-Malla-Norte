@@ -2,30 +2,170 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>LSCSO - Control de Malla</title>
-  <link rel="stylesheet" href="style.css">
+  <title>LSCSO Control de Malla</title>
+
+  <!-- BOOTSTRAP -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #1b2a30, #0f1a1f);
+      color: #e8f1f2;
+    }
+
+    h1 {
+      color: #d4af37;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .table {
+      background: #2c3e44;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .table th {
+      background: #0f1a1f;
+      color: #d4af37;
+    }
+
+    .disponible {
+      background-color: #b8f2e6 !important;
+    }
+
+    .no-disponible {
+      background-color: #ffb5b5 !important;
+    }
+
+    textarea {
+      min-height: 80px;
+    }
+
+    .btn-sheriff {
+      background-color: #d4af37;
+      border: none;
+      color: black;
+    }
+
+    .btn-sheriff:hover {
+      background-color: #c19b2e;
+    }
+  </style>
 </head>
-<body>
 
-<h1>🚓 LSCSO - Control de Malla</h1>
+<body class="container py-4">
 
-<table id="tabla">
-  <thead>
-    <tr>
-      <th>Malla</th>
-      <th>Unidad</th>
-      <th>Estado</th>
-      <th>Situación</th>
-      <th>Avisos Acudidos</th>
-      <th>Contador</th>
-      <th>Notas</th>
-    </tr>
-  </thead>
-  <tbody id="bodyTabla"></tbody>
-</table>
+<h1>⭐ LSCSO - CONTROL DE MALLA</h1>
 
-<button onclick="añadirFila()">➕ Añadir Unidad</button>
+<div class="table-responsive">
+  <table class="table table-bordered align-middle text-center">
+    <thead>
+      <tr>
+        <th>Malla</th>
+        <th>Unidad</th>
+        <th>Estado</th>
+        <th>Situación</th>
+        <th>Avisos acudidos</th>
+        <th>Notas</th>
+      </tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
+</div>
 
-<script src="script.js"></script>
+<div class="text-center mt-3">
+  <button class="btn btn-sheriff" onclick="añadirFila()">➕ Añadir Unidad</button>
+</div>
+
+<script>
+const mallas = [
+  ...Array.from({length:10}, (_,i)=>`Alpha ${(i+1)*10}`),
+  ...Array.from({length:10}, (_,i)=>`Bravo ${(i+1)*10}`),
+  "Charlie 1","Charlie 2","Charlie 3",
+  "Ocelot 10","Ocelot 20",
+  "Bike 10","Bike 20",
+  "Yankee","Roger",
+  "Foxtrot 10","Foxtrot 20",
+  "Mike 10","Mike 20",
+  "Dogma 10","Dogma 20",
+  "Victor 10","Victor 20",
+  "Tiger 10","Tiger 20",
+  "Ranger","Shell","Pia"
+];
+
+const situaciones = ["ST","MT","GT","TAC"];
+const estados = ["Disponible","No Disponible"];
+
+function crearSelect(opciones) {
+  let select = document.createElement("select");
+  select.className = "form-select";
+
+  opciones.forEach(op => {
+    let option = document.createElement("option");
+    option.value = op;
+    option.textContent = op;
+    select.appendChild(option);
+  });
+
+  return select;
+}
+
+function crearFila() {
+  const tr = document.createElement("tr");
+
+  // MALLA
+  let tdMalla = document.createElement("td");
+  tdMalla.appendChild(crearSelect(mallas));
+
+  // UNIDAD
+  let tdUnidad = document.createElement("td");
+  tdUnidad.innerHTML = `<input class="form-control" placeholder="Agentes...">`;
+
+  // ESTADO
+  let tdEstado = document.createElement("td");
+  let selectEstado = crearSelect(estados);
+
+  selectEstado.onchange = () => {
+    selectEstado.classList.remove("disponible", "no-disponible");
+    if (selectEstado.value === "Disponible") {
+      selectEstado.classList.add("disponible");
+    } else {
+      selectEstado.classList.add("no-disponible");
+    }
+  };
+
+  tdEstado.appendChild(selectEstado);
+
+  // SITUACIÓN
+  let tdSituacion = document.createElement("td");
+  tdSituacion.appendChild(crearSelect(situaciones));
+
+  // AVISOS
+  let tdAvisos = document.createElement("td");
+  tdAvisos.innerHTML = `<textarea class="form-control" placeholder="Ej: joyería, ammu, banco..."></textarea>`;
+
+  // NOTAS
+  let tdNotas = document.createElement("td");
+  tdNotas.innerHTML = `<textarea class="form-control" placeholder="Notas..."></textarea>`;
+
+  tr.appendChild(tdMalla);
+  tr.appendChild(tdUnidad);
+  tr.appendChild(tdEstado);
+  tr.appendChild(tdSituacion);
+  tr.appendChild(tdAvisos);
+  tr.appendChild(tdNotas);
+
+  return tr;
+}
+
+function añadirFila() {
+  document.getElementById("tabla").appendChild(crearFila());
+}
+
+// fila inicial
+añadirFila();
+</script>
+
 </body>
 </html>
