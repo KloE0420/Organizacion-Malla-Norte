@@ -167,11 +167,20 @@ function render() {
 
     let tdEstado = document.createElement("td");
     let selEstado = crearSelect(estados, fila.estado, val => {
-      datos[i].estado = val; guardar();
+      datos[i].estado = val;
+    
+      // 🔥 actualizar color en tiempo real
+      selEstado.classList.remove("disponible", "no-disponible");
+    
+      if (val === "Disponible") {
+        selEstado.classList.add("disponible");
+      } else {
+        selEstado.classList.add("no-disponible");
+      }
+    
+      guardar();
     });
 
-    if (fila.estado === "Disponible") selEstado.classList.add("disponible");
-    else selEstado.classList.add("no-disponible");
 
     tdEstado.appendChild(selEstado);
 
